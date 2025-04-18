@@ -5,11 +5,11 @@ import requests
 import time
 
 # Configuration
-BASE_URL = "https://discord.sjc1.qualtrics.com/jfe/form/SV_"
+BASE_URL = "https://discord.sjc1.qualtrics.com/jfe/form/"  # Fixed base URL
 WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 TESTED_LINKS_FILE = "tested_links.txt"
 VALID_LINKS_FILE = "valid_links.txt"
-NUM_ATTEMPTS = 100  # Number of URLs to try per run (adjust as needed)
+NUM_ATTEMPTS = 100  # Number of URLs to try per run
 REQUEST_DELAY = 1  # Seconds between requests to avoid rate-limiting
 
 def load_links(filename):
@@ -26,7 +26,7 @@ def save_links(filename, links):
             f.write(f"{link}\n")
 
 def generate_form_id():
-    """Generate a random 15-character alphanumeric form ID."""
+    """Generate a random 15-character alphanumeric form ID with SV_ prefix."""
     characters = string.ascii_letters + string.digits  # a-z, A-Z, 0-9
     return "SV_" + "".join(random.choice(characters) for _ in range(15))
 
@@ -35,13 +35,15 @@ def is_valid_form(url):
     try:
         # Send HEAD request to minimize data transfer
         response = requests.head(url, timeout=5, allow_redirects=True)
+        print(f"HEAD request for {url}: Status {response.status_code}")
         if response.status_code == 200:
-            # Verify it's a form page by checking for form content (optional GET request)
+            # Verify it's a form page by checking for form content
             response = requests.get(url, timeout=5)
             if "qualtrics" in response.text.lower() and "form" in response.text.lower():
                 return True
         return False
-    except requests.RequestException:
+    except requests.RequestException as e:
+        print(f"Error checking {url}: {e}")
         return False
 
 def send_to_discord(url):
@@ -68,6 +70,7 @@ def main():
         url = f"{BASE_URL}{form_id}"
 
         if url in tested_links or url in valid_links:
+            print(f"Skipping already tested/valid URL: {url}")
             continue
 
         print(f"Checking {url}")
