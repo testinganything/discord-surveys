@@ -3,7 +3,7 @@ name: Fuzz Qualtrics Forms
 on:
   schedule:
     - cron: '0 0 * * *' # Runs daily at midnight UTC
-  workflow_dispatch: # Allows manual triggering
+  workflow_dispatch:
 
 jobs:
   fuzz-forms:
@@ -23,7 +23,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Run script to fuzz forms
+      - name: Run form fuzzing script
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: python scripts/fuzz_forms.py
