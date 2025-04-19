@@ -9,7 +9,7 @@ BASE_URL = "https://discord.sjc1.qualtrics.com/jfe/form/"
 WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 TESTED_LINKS_FILE = "tested_links.txt"
 VALID_LINKS_FILE = "valid_links.txt"
-NUM_ATTEMPTS = 1000
+NUM_ATTEMPTS = 100000
 REQUEST_DELAY = 1
 
 def load_links(filename):
