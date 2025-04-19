@@ -32,8 +32,6 @@ jobs:
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git fetch origin
-          git rebase origin/main || echo "Nothing to rebase"
           git add tested_links.txt valid_links.txt
           git commit -m 'Update fuzzed Qualtrics form links' || echo "No changes to commit"
-          git push origin HEAD:main
+          git push
